@@ -9,6 +9,8 @@ string resb 61
 sub_str resb 41
 inverted_str resb 41
 no_spaces_str resb 35
+upper_char_str resb 41
+v resb 41
 
 section .text
 global CMAIN
@@ -25,7 +27,13 @@ CMAIN:
     call Q2
     call Q3
     call Q4
+    
+   
     call Q5
+
+    call Q6
+    
+    call Q7
     ret
 ; //----------------------------------------//    
 
@@ -102,6 +110,7 @@ Q3:
     
 ; //----------------------------------------//
 Q4:
+    
     mov edi, no_spaces_str
     mov ecx, 42
     remove_spaces:
@@ -119,10 +128,72 @@ Q4:
     ret
 ; //----------------------------------------//
 
-;procedure da quesão 5 aqui
+Q5: 
+    
+    mov ebp,esp; for correct debugging
+    mov esi,sub_str
+    mov ecx,40
+    mov edx,1 ; conta a os espaços entre as maísculas e minúsculas ao decorrer da frase
+    mov ebx,0; conta a quantidade de vezes que aumentamos os espaços
+    mov edi,0
+    mov edi,upper_char_str
+    cld
+    catch_char:
+        lodsb
+        
+        
+        cmp eax,32 ;verifica se o caracter é um espaço
+        je space
+        
+        cmp edx,1
+        je upper_char
+        
+        cmp edx,0
+        je upper_char
+        
+        dec edx
+       
+        stosb
+        loop catch_char
+        NEWLINE
+        PRINT_STRING upper_char_str
+        NEWLINE
+        NEWLINE
+        ret
+    upper_char:
+        sub eax,32
+        stosb 
+        
+        cmp edx,0 ; signigfica que é a segunda letra maíuscula em sequência
+        je next_lower_char
+        
+        dec edx
+        dec ecx
+        
+        jmp catch_char
+    
+    next_lower_char:
+        mov edx,4
+        add edx,ebx ; adicionamos ao contador de espaços a qnt. de vezes que aumentamos a distancia para sempre aumentar em 1
+        
+        dec ecx
+        inc ebx
+        jmp catch_char
+           
+    space:
+        dec ecx
+        stosb
+        jmp catch_char
+    
+          
+     
+   
+   
+    
+    
 
 ; //----------------------------------------//
-Q5:
+Q6:
     mov ecx, 36
     mov esi, no_spaces_str
     get_pos_in_alphabet:
@@ -137,3 +208,6 @@ Q5:
     ret
 ; //----------------------------------------//
 
+
+Q7:
+    ret
