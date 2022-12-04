@@ -1,9 +1,10 @@
 %include "io.inc"
 
 section .bss
-sub_str resb 32
-inverted_str resb 32
-no_spaces_str resb 32
+sub_str resb 41
+inverted_str resb 41
+no_spaces_str resb 36
+interchanged_str resb 41
 
 section .text
 global CMAIN
@@ -59,8 +60,9 @@ remove_spaces:
     cmp eax, 32     ;verifica se é espaço pelo código ascii
     je loop_remove_spaces     ;não armazena se for espaço
     stosb
+    
     loop_remove_spaces:
-    loop remove_spaces
+        loop remove_spaces
     
     PRINT_STRING no_spaces_str
     NEWLINE
@@ -68,8 +70,48 @@ remove_spaces:
 
 ; //----------------------------------------//
 
-;procedure da quesão 5 aqui
-
+mov esi, sub_str
+mov ecx, 7
+mov edi, interchanged_str
+alternate_str:
+    ;faz loop maior
+    ;seta contador pra dois
+    ;sub-loop tornando maisucula e verificando se tem letra
+    ;seta contador pra 3
+    ;sub-loop verificando se tem letra e storando
+    
+    call capitalize
+    call capitalize
+    call lower_case
+    call lower_case
+    call lower_case
+    loop alternate_str
+    call capitalize
+    
+    PRINT_STRING interchanged_str
+    NEWLINE
+    NEWLINE
+    ret
+    
+    capitalize:
+        lodsb
+        cmp eax, 32
+        je store_space
+        sub al, 32
+        stosb
+        ret
+    
+    lower_case:
+        lodsb
+        cmp eax, 32
+        stosb
+        je lower_case
+        ret
+    
+    store_space:
+        stosb
+        jmp capitalize
+    
 ; //----------------------------------------//
 
 mov ecx, 36
